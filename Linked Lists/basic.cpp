@@ -173,6 +173,144 @@ void reverse(node *&head){
     head = prev;
 }
 
+node* midPoint(node* head){
+    if(head==NULL||head->next==NULL){
+        return head;
+    }
+    node* slow = head;
+    node* fast = head->next;
+
+    while(fast!=NULL&&fast->next!=NULL){
+        fast = fast->next->next;
+        slow = slow->next;
+    }
+    return slow;
+}
+
+node* kthNodeFromTheEnd(node* head, int k){
+    if(head==NULL||head->next==NULL){
+        return head;
+    }
+    
+    node* slow = head;
+    node* fast = head;
+    int z = k;
+    while(z--){
+        fast = fast->next;
+    }
+    while(k--){
+        slow = slow->next;
+        fast = fast->next;
+    }
+    return slow;
+}
+
+// Floyds removLoop algorithm
+void removeLoop(node *slow, node *head)
+{
+    node *ptr1 = slow;
+    node *ptr2 = slow;
+ 
+    // Count the number of nodes in loop
+    unsigned int k = 1, i;
+    while (ptr1->next != ptr2)
+    {
+        ptr1 = ptr1->next;
+        k++;
+    }
+ 
+    // Fix one pointer to head
+    ptr1 = head;
+ 
+    // And the other pointer to k nodes after head
+    ptr2 = head;
+    for (i = 0; i < k; i++)
+      ptr2 = ptr2->next;
+ 
+    /*  Move both pointers at the same pace,
+      they will meet at loop starting node */
+    while (ptr2 != ptr1)
+    {
+        ptr1 = ptr1->next;
+        ptr2 = ptr2->next;
+    }
+ 
+    // Get pointer to the last node
+    ptr2 = ptr2->next;
+    while (ptr2->next != ptr1)
+       ptr2 = ptr2->next;
+ 
+    /* Set the next node of the loop ending node
+      to fix the loop */
+    ptr2->next = NULL;
+}
+
+
+// a and b are 2 sorted linked lists
+node* merge(node* a, node* b){
+    if(a==NULL){
+        return b;
+    }else if(b==NULL){
+        return a;
+    }
+    
+    node*c;
+    
+    //Compare a and b for smaller element
+    if(a->data<b->data){
+        c = a;
+        c->next = merge(a->next, b);
+    }else{
+        c = b;
+        c->next = merge(a, b->next);
+    }
+    return c;
+}
+
+bool detectCycle(node*head){
+    node*slow = head;
+    node*fast = head;
+    
+    while(slow!=NULL&&fast!=NULL&&fast->next!=NULL){
+        fast = fast->next->next;
+        slow = slow->next;
+        
+        if(fast==slow){
+            removeLoop(slow, head);
+            return true;
+        }
+    }
+
+    // Indicating there is no loop
+    return false;
+}
+
+
+
+node* mergeSort(node* head){
+    //Base case
+    if(head==NULL||head->next==NULL){
+        return head;
+    }
+    
+    //Rec case
+    //1. Mid point
+    node* mid = midPoint(head);
+    
+    node* a = head;
+    node* b = mid->next;
+    mid->next = NULL;
+    
+    //2. Recursively sort.
+    a = mergeSort(a);
+    b = mergeSort(b);
+    
+    //3.Merge a and b
+    node*c = merge(a,b);
+    return c;
+}
+
+
 //Operator overloading to emulate Printlist using <<
 //and >> to emulate buildList.
 
@@ -188,13 +326,19 @@ ostream& operator<<(ostream &is, node*&head){
 
 int main() {
     node* head = NULL;
-    node*head2 = NULL;
+    // node*head2 = NULL;
     
     
-    cin>>head>>head2;
-    cout<<head<<endl<<head2;
-    reverse(head);
+    // cin>>head>>head2;
+    cin>>head;
+    // cout<<head<<endl<<head2;
     cout<<head;
+    node* sorted = mergeSort(head);
+    cout<<sorted;
+    // reverse(head);
+    // node* anotherNode = kthNodeFromTheEnd(head, 2);
+    // cout<<anotherNode->data;
+    // cout<<head;
     // insertAtHead(head, 3);
     // insertAtHead(head, 4);
     // insertAtHead(head, 5);
