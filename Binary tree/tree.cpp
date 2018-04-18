@@ -95,7 +95,13 @@ void levelOrderRecursion(node* root){
     }
 }
 
+int countNodes(node* root){
 
+    if(root==NULL){
+        return 0;
+    }
+    return 1 + countNodes(root->left) + countNodes(root->right);
+}
 int countNodes(node* root){
     if(root==NULL){
         return 0;
@@ -124,7 +130,7 @@ int replaceWithChildSum(node* root){
     }
     
     //Node is leaf
-    if(root->left == NULL || root->right == NULL){
+    if(root->left == NULL && root->right == NULL){
         return root->data;
     }
     
