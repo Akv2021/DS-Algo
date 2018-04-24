@@ -14,6 +14,12 @@ class node{
         }
 };
 
+class myPair{
+    public: 
+        int height;
+        int diameter;
+}
+
 
 node* buildTree(){
     int data;
@@ -101,13 +107,6 @@ int countNodes(node* root){
         return 0;
     }
     return 1 + countNodes(root->left) + countNodes(root->right);
-}
-int countNodes(node* root){
-    if(root==NULL){
-        return 0;
-    }
-    int count = 1 + countNodes(root->left) + countNodes(root->right);
-    return count;
 }
 
 //Replace every node with the sum of nodes + node_data
