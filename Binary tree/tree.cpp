@@ -18,8 +18,45 @@ class myPair{
     public: 
         int height;
         int diameter;
+};
+
+class sumPair{
+    public: 
+        int inc;
+        int exc;
+};
+
+
+// Max sum of the nodes of tree such that if we include a node A, then
+// its child and its parent cannot be included in sum.
+sumPair maxSumProblem(node*root){
+    sumPair p;
+    if(root==NULL){
+        p.inc =0;
+        p.exc=0;
+        return p;
+    }
+    
+    //Call on the left and the right part
+    sumPair left = maxSumProblem(root->left);
+    sumPair right = maxSumProblem(root->right);
+    
+    p.inc = root->data + left.exc + right.exc;
+    p.exc = max(left.inc,left.exc) + max(right.inc,right.exc);
+    
+    return p;
+    
 }
 
+
+void mirror(node*root){
+    if(root==NULL){
+        return;
+    }
+    swap(root->left,root->right);
+    mirror(root->left);
+    mirror(root->right);
+}
 
 node* buildTree(){
     int data;
@@ -122,6 +159,42 @@ int replaceWithSum(node* root){
     
 }
 
+// O(n2) time.
+int diameter(node*root){
+    //Base case
+    if(root ==NULL){
+        return 0;
+    }
+    
+    int op1 = height(root->left) + height(root->right);
+    int op2 = diameter(root->left);
+    int op3 = diameter(root->right);
+    return max(op1, max(op2,op3));
+}
+
+//Linear time
+myPair diameterFast(node* root){
+    //Null tree
+    myPair p;
+    if(root ==NULL){
+        p.diameter = 0;
+        p.height = 0;
+        return p;
+    }
+    myPair left = diameterFast(root->left);
+    myPair right = diameterFast(root->right);
+    
+    int d1 = left.diameter;
+    int d2 = right.diameter;
+    
+    int h1 = left.height;
+    int h2 = right.height;
+    
+    p.diameter = max(h1+h2,max(d1,d2));
+    p.height = max(h1,h2) + 1;
+}
+
+
 int replaceWithChildSum(node* root){
     
     if(root==NULL){
@@ -152,15 +225,17 @@ int main() {
     printLevel(root, 1);
     cout<<endl;
     cout<<countNodes(root);
-    cout<<endl;
-    cout<<height(root);
+    // cout<<endl;
+    // cout<<height(root);
+    // cout<<endl<<"-----------"<<endl;
+    // levelOrderRecursion(root);
+    // cout<<endl<<"-----------"<<endl;
+    // printPreorder(root);
+    // cout<<endl<<"-----------"<<endl;
+    // printPostOrder(root);
+    // cout<<endl<<"-----------"<<endl;
+    // cout<<replaceWithSum(root);
     cout<<endl<<"-----------"<<endl;
-    levelOrderRecursion(root);
-    cout<<endl<<"-----------"<<endl;
-    printPreorder(root);
-    cout<<endl<<"-----------"<<endl;
-    printPostOrder(root);
-    cout<<endl<<"-----------"<<endl;
-    cout<<replaceWithSum(root);
+    cout<<diameter(root);
     return 0;
 }
